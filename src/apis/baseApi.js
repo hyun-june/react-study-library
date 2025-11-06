@@ -9,10 +9,9 @@ export const getBooks = async () => {
 };
 
 export const getSearchBook = async (keyword) => {
-  console.log("🚀 ~ getSearchBook ~ keyword:", keyword);
   try {
     const response = await fetch(
-      `https://openlibrary.org/search.json?q=${keyword}`
+      `https://openlibrary.org/search.json?title=${keyword}`
     );
     const data = await response.json();
     return data;

@@ -1,4 +1,3 @@
-import Header from "./components/Header";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
@@ -10,17 +9,32 @@ import { useGetBooks } from "./hooks/useGetSubjects";
 import Spinner from "react-bootstrap/Spinner";
 import { useState } from "react";
 import { useGetSearch } from "./hooks/useGetSearch";
+import userStore from "./store/userStore";
+import { useNavigate } from "react-router";
 
 function App() {
-  const { data, isLoading } = useGetBooks();
+  const { id, updateLikeBook, likeBooks, isLogin, deleteLikeBook } =
+    userStore();
+  console.log("🚀 ~ App ~ likeBooks:", likeBooks);
+
   const [keyword, setKeyword] = useState("");
   const [searchKeyword, setSearchKeyword] = useState("");
+  const [bookList, setBookList] = useState([]);
+  const { data, isLoading } = useGetBooks();
   const { data: searchData, isLoading: searchLoading } =
     useGetSearch(searchKeyword);
 
-  const bookData = data?.works;
+  const navigate = useNavigate();
+  const searchDataList = searchData?.docs;
 
-  if (isLoading)
+  const bookDataList = data?.works;
+
+  const list =
+    searchDataList?.length > 0
+      ? [...searchDataList].slice(0, 12)
+      : bookDataList;
+
+  if (isLoading || searchLoading)
     return (
       <div className="spinner">
         <Spinner animation="border" role="status" variant="warning">
@@ -30,19 +44,32 @@ function App() {
     );
 
   const search = () => {
-    if (!keyword.trim()) return;
+    if (!keyword.trim()) {
+      setBookList(bookDataList || []);
+      setSearchKeyword("");
+      return;
+    }
     setSearchKeyword(keyword);
+  };
+
+  const addLike = (book) => {
+    if (!isLogin) return navigate("login");
+    const isLiked = likeBooks.find((item) => item.key === book.key);
+
+    if (isLiked) {
+      deleteLikeBook(book);
+    } else {
+      updateLikeBook(book);
+    }
   };
 
   return (
     <div className="main">
-      <Header />
-
       <section className="banner">
         <div className="bannerInner">
           <div>
             <h3>코딩알려주는 누나 도서관</h3>
-            <h4>id님 환영합니다!</h4>
+            {id ? <h4>{id}님 환영합니다!</h4> : null}
           </div>
 
           <InputGroup className="mb-3 inputGroup">
@@ -58,11 +85,11 @@ function App() {
         </div>
       </section>
       <Container>
-        <h2>인기 도서</h2>
-        {/* <Book data={bookData} /> */}
+        <h2>{searchDataList?.length > 0 ? "검색 도서" : "인기 도서"}</h2>
+
         <div className="bookSection">
-          {bookData.map((item, i) => (
-            <Book data={item} />
+          {list?.map((item, i) => (
+            <Book data={item} key={i} addLike={addLike} />
           ))}
         </div>
       </Container>
