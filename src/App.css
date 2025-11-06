@@ -1,0 +1,66 @@
+.banner {
+  background-color: #1b3b36;
+  color: yellow;
+  padding: 5em 2em;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2em;
+}
+
+.bannerInner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  justify-content: space-around;
+  align-items: center;
+  width: 70%;
+}
+
+.inputGroup {
+  width: 80%;
+}
+
+#button-addon2 {
+  color: black;
+  background-color: beige;
+  border: none;
+  outline: none;
+}
+
+.book_like_btn {
+  background-color: transparent;
+  padding: 0.25rem 0.5rem;
+  border-color: rgb(230, 200, 140);
+  color: rgb(230, 200, 140);
+  align-self: flex-end;
+}
+
+.spinner {
+  top: 50%;
+  position: absolute;
+  left: 50%;
+  transform: translateY(-50%);
+}
+
+.bookSection {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2em;
+}
+
+.book_img {
+  height: 180px;
+  object-fit: cover;
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.book_card {
+  transition: transform 0.3s ease-in-out;
+}
+
+.book_card:hover {
+  transform: translateY(-2%);
+}
